@@ -3,9 +3,9 @@ package util
 import (
 	"free5gc/lib/MongoDBLibrary"
 	"free5gc/lib/openapi/models"
-	"free5gc/src/ran/context"
-	"free5gc/src/ran/factory"
-	"free5gc/src/ran/logger"
+	"free5gc/src/gnb/context"
+	"free5gc/src/gnb/factory"
+	"free5gc/src/gnb/logger"
 
 	"github.com/google/uuid"
 )
@@ -13,7 +13,7 @@ import (
 func InitRanContext(context *context.RANContext) {
 	MongoDBLibrary.SetMongoDB("free5gc", "mongodb://127.0.0.1:27017")
 	config := factory.RanConfig
-	logger.UtilLog.Infof("ranconfig Info: Version[%s] Description[%s]", config.Info.Version, config.Info.Description)
+	logger.UtilLog.Infof("gNB config Info: Version[%s] Description[%s]", config.Info.Version, config.Info.Description)
 	configuration := config.Configuration
 	context.NfId = uuid.New().String()
 	if configuration.RanName != "" {
@@ -39,4 +39,6 @@ func InitRanContext(context *context.RANContext) {
 	context.AmfInterface = configuration.AmfInterface
 	context.UpfInterface = configuration.UpfInterface
 	context.UEList = configuration.UEList
+	context.NGRANInterface = configuration.NGRANInterface
+	context.GTPInterface = configuration.GTPInterface
 }

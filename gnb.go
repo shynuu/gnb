@@ -2,9 +2,9 @@ package main
 
 import (
 	"free5gc/src/app"
-	"free5gc/src/ran/logger"
-	"free5gc/src/ran/service"
-	"free5gc/src/ran/version"
+	"free5gc/src/gnb/logger"
+	"free5gc/src/gnb/service"
+	"free5gc/src/gnb/version"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -24,7 +24,7 @@ func main() {
 	app.Name = "5G-ran"
 	appLog.Infoln(app.Name)
 	appLog.Infoln("RAN version: ", version.GetVersion())
-	app.Usage = "-free5gccfg common configuration file -rancfg ran configuration file"
+	app.Usage = "-free5gccfg common configuration file -gnbcfg ran configuration file"
 	app.Action = action
 	app.Flags = RAN.GetCliCmd()
 	if err := app.Run(os.Args); err != nil {

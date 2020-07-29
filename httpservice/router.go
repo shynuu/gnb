@@ -1,7 +1,7 @@
 package httpservice
 
 import (
-	"free5gc/src/ran/logger"
+	"free5gc/src/gnb/logger"
 	"net/http"
 	"strings"
 

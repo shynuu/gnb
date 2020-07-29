@@ -12,10 +12,10 @@ import (
 	"free5gc/lib/nas/security"
 	"free5gc/lib/ngap"
 	"free5gc/lib/openapi/models"
-	"free5gc/src/ran/context"
-	"free5gc/src/ran/interfaces"
-	"free5gc/src/ran/procedures"
-	"free5gc/src/ran/uee"
+	"free5gc/src/gnb/context"
+	"free5gc/src/gnb/interfaces"
+	"free5gc/src/gnb/procedures"
+	"free5gc/src/gnb/uee"
 	"net"
 	"time"
 
@@ -23,8 +23,6 @@ import (
 	"golang.org/x/net/icmp"
 	"golang.org/x/net/ipv4"
 )
-
-const ranIpAddr string = "10.200.200.1"
 
 func setUESecurityCapability(ue *uee.RanUeContext) (UESecurityCapability *nasType.UESecurityCapability) {
 	UESecurityCapability = &nasType.UESecurityCapability{
@@ -114,15 +112,16 @@ func getSmPolicyData() (smPolicyData models.SmPolicyData) {
 }
 
 // Ping function
-func Ping(source string, destination string, userEquipment *context.UE) {
+func Ping(destination string, userEquipment *context.UE) (err error) {
 	// Establish PDU Session
 	amfConn, upfConn, ue, err := PDUSessionEstablishment(userEquipment)
 	time.Sleep(1 * time.Second)
 
 	// Send the Dummy Packet with the ICMP Request
-	tt, b, err := forgeICMP(source, destination)
+	tt, b, err := forgeICMP(userEquipment.IPv4, destination)
 	if err != nil {
 		err = fmt.Errorf("Error sending the Packet")
+		return
 	}
 	sendICMP(upfConn, tt, b)
 	time.Sleep(1 * time.Second)
@@ -133,7 +132,7 @@ func Ping(source string, destination string, userEquipment *context.UE) {
 	// Clean the test data
 	CleanTestData(ue)
 	amfConn.Close()
-
+	return
 }
 
 func CleanTestData(ue *uee.RanUeContext) {
@@ -150,15 +149,25 @@ func PDUSessionEstablishment(userEquipment *context.UE) (amfConn *sctp.SCTPConn,
 	var sendMsg []byte
 	var recvMsg = make([]byte, 2048)
 
+	amfN3IpAddr := context.RAN_Self().AmfInterface.IPv4Addr
+	amfN3Port := context.RAN_Self().AmfInterface.Port
+	ranN3IpAddr := context.RAN_Self().NGRANInterface.IPv4Addr
+	ranN3Port := context.RAN_Self().NGRANInterface.Port
+
 	// RAN connect to AMF
-	amfConn, err = interfaces.ConnectToAmf(context.RAN_Self().AmfInterface.IPv4Addr, "127.0.0.1", context.RAN_Self().AmfInterface.Port, 9487)
+	amfConn, err = interfaces.ConnectToAmf(amfN3IpAddr, ranN3IpAddr, amfN3Port, ranN3Port)
 	if err != nil {
 		err = fmt.Errorf("Error Connecting to AMF")
 		return
 	}
 
+	ranGTPIpAddr := context.RAN_Self().GTPInterface.IPv4Addr
+	ranGTPPort := context.RAN_Self().GTPInterface.Port
+	upfGTPIpAddr := context.RAN_Self().UpfInterface.IPv4Addr
+	upfGTPPort := context.RAN_Self().UpfInterface.Port
+
 	// RAN connect to UPF
-	upfConn, err = interfaces.ConnectToUpf(ranIpAddr, context.RAN_Self().UpfInterface.IPv4Addr, 2152, context.RAN_Self().UpfInterface.Port)
+	upfConn, err = interfaces.ConnectToUpf(ranGTPIpAddr, upfGTPIpAddr, ranGTPPort, upfGTPPort)
 	if err != nil {
 		err = fmt.Errorf("Error Connecting to UPF")
 		return
@@ -413,7 +422,7 @@ func PDUSessionEstablishment(userEquipment *context.UE) (amfConn *sctp.SCTPConn,
 	}
 
 	// send 14. NGAP-PDU Session Resource Setup Response
-	sendMsg, err = procedures.GetPDUSessionResourceSetupResponse(ue.AmfUeNgapId, ue.RanUeNgapId, ranIpAddr)
+	sendMsg, err = procedures.GetPDUSessionResourceSetupResponse(ue.AmfUeNgapId, ue.RanUeNgapId, ranGTPIpAddr)
 	if err != nil {
 		err = fmt.Errorf("Error getting NGAP-PDU Session Resource Setup Response")
 		return

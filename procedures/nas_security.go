@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"free5gc/lib/nas"
 	"free5gc/lib/nas/security"
-	"free5gc/src/ran/uee"
+	"free5gc/src/gnb/uee"
 	"reflect"
 )
 

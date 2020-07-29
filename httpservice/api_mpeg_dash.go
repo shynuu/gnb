@@ -3,7 +3,7 @@ package httpservice
 import (
 	"free5gc/lib/openapi"
 	"free5gc/lib/openapi/models"
-	"free5gc/src/ran/logger"
+	"free5gc/src/gnb/logger"
 	"net/http"
 
 	"fmt"

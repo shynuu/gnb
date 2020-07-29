@@ -4,7 +4,7 @@
 
 package factory
 
-import "free5gc/src/ran/context"
+import "free5gc/src/gnb/context"
 
 type Config struct {
 	Info *Info `yaml:"info"`
@@ -32,6 +32,10 @@ type Configuration struct {
 	AmfInterface context.AmfInterface `yaml:"amfInterface,omitempty"`
 
 	UpfInterface context.UpfInterface `yaml:"upfInterface,omitempty"`
+
+	NGRANInterface context.NGRANInterface `yaml:"ngranInterface,omitempty"`
+
+	GTPInterface context.GTPInterface `yaml:"gtpInterface,omitempty"`
 }
 
 type Sbi struct {

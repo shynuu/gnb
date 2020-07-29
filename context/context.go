@@ -17,6 +17,8 @@ type RANContext struct {
 	NetworkName     NetworkName // unit is second
 	AmfInterface    AmfInterface
 	UpfInterface    UpfInterface
+	NGRANInterface  NGRANInterface
+	GTPInterface    GTPInterface
 	UEList          []UE
 	UriScheme       models.UriScheme
 	NfId            string
@@ -26,9 +28,7 @@ type RANContext struct {
 type UE struct {
 	Supi string `yaml:"SUPI,omitempty" json:"SUPI"`
 
-	ipv4 string `yaml:"ipv4,omitempty" json:"SUPI"`
-
-	identifier string `yaml:"identifier,omitempty" json:"SUPI"`
+	IPv4 string `yaml:"ipv4,omitempty" json:"SUPI"`
 }
 
 type AmfInterface struct {
@@ -38,6 +38,18 @@ type AmfInterface struct {
 }
 
 type UpfInterface struct {
+	IPv4Addr string `yaml:"ipv4Addr,omitempty"`
+
+	Port int `yaml:"port,omitempty"`
+}
+
+type NGRANInterface struct {
+	IPv4Addr string `yaml:"ipv4Addr,omitempty"`
+
+	Port int `yaml:"port,omitempty"`
+}
+
+type GTPInterface struct {
 	IPv4Addr string `yaml:"ipv4Addr,omitempty"`
 
 	Port int `yaml:"port,omitempty"`

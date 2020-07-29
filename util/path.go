@@ -7,4 +7,4 @@ import (
 var RanLogPath = path_util.Gofree5gcPath("free5gc/ransslkey.log")
 var RanPemPath = path_util.Gofree5gcPath("free5gc/support/TLS/ran.pem")
 var RanKeyPath = path_util.Gofree5gcPath("free5gc/support/TLS/ran.key")
-var DefaultRanConfigPath = path_util.Gofree5gcPath("free5gc/config/rancfg.conf")
+var DefaultRanConfigPath = path_util.Gofree5gcPath("free5gc/config/gnbcfg.conf")

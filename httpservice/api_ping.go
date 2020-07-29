@@ -3,9 +3,9 @@ package httpservice
 import (
 	"free5gc/lib/openapi"
 	"free5gc/lib/openapi/models"
-	"free5gc/src/ran/context"
-	"free5gc/src/ran/forge"
-	"free5gc/src/ran/logger"
+	"free5gc/src/gnb/context"
+	"free5gc/src/gnb/forge"
+	"free5gc/src/gnb/logger"
 	"net/http"
 	"strconv"
 
@@ -46,8 +46,7 @@ func PingDevice(c *gin.Context) {
 	identifier := c.Params.ByName("identifier")
 	index, err := strconv.Atoi(identifier)
 	device := c.Params.ByName("device")
-	fmt.Println(&context.RAN_Self().UEList)
-	forge.Ping(device, "60.60.0.101", &context.RAN_Self().UEList[index])
+	err = forge.Ping(device, &context.RAN_Self().UEList[index])
 
 	fmt.Println(identifier)
 	fmt.Println(device)

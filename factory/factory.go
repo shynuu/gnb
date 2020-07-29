@@ -10,7 +10,7 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	"free5gc/src/ran/logger"
+	"free5gc/src/gnb/logger"
 )
 
 var RanConfig Config

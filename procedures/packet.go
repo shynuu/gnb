@@ -5,7 +5,7 @@ import (
 	"free5gc/lib/nas/nasMessage"
 
 	"free5gc/lib/ngap"
-	"free5gc/src/ran/uee"
+	"free5gc/src/gnb/uee"
 	"free5gc/src/test/ngapTestpacket"
 )
 

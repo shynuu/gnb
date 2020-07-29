@@ -7,11 +7,11 @@ import (
 	"free5gc/lib/path_util"
 	"free5gc/src/amf/ngap/sctp"
 	"free5gc/src/app"
-	"free5gc/src/ran/context"
-	"free5gc/src/ran/factory"
-	"free5gc/src/ran/httpservice"
-	"free5gc/src/ran/logger"
-	"free5gc/src/ran/util"
+	"free5gc/src/gnb/context"
+	"free5gc/src/gnb/factory"
+	"free5gc/src/gnb/httpservice"
+	"free5gc/src/gnb/logger"
+	"free5gc/src/gnb/util"
 	"os/exec"
 	"sync"
 
@@ -26,7 +26,7 @@ type RAN struct{}
 type (
 	// Config information.
 	Config struct {
-		rancfg string
+		gnbcfg string
 	}
 )
 
@@ -38,7 +38,7 @@ var ranCLi = []cli.Flag{
 		Usage: "common config file",
 	},
 	cli.StringFlag{
-		Name:  "rancfg",
+		Name:  "gnbcfg",
 		Usage: "amf config file",
 	},
 }
@@ -59,13 +59,13 @@ func (*RAN) GetCliCmd() (flags []cli.Flag) {
 func (*RAN) Initialize(c *cli.Context) {
 
 	config = Config{
-		rancfg: c.String("rancfg"),
+		gnbcfg: c.String("gnbcfg"),
 	}
 
-	if config.rancfg != "" {
-		factory.InitConfigFactory(config.rancfg)
+	if config.gnbcfg != "" {
+		factory.InitConfigFactory(config.gnbcfg)
 	} else {
-		DefaultRanConfigPath := path_util.Gofree5gcPath("free5gc/config/rancfg.conf")
+		DefaultRanConfigPath := path_util.Gofree5gcPath("free5gc/config/gnbcfg.conf")
 		factory.InitConfigFactory(DefaultRanConfigPath)
 	}
 
@@ -147,7 +147,7 @@ func (amf *RAN) Exec(c *cli.Context) error {
 
 	//RAN.Initialize(cfgPath, c)
 
-	initLog.Traceln("args:", c.String("rancfg"))
+	initLog.Traceln("args:", c.String("gnbcfg"))
 	args := amf.FilterCli(c)
 	initLog.Traceln("filter: ", args)
 	command := exec.Command("./ran", args...)

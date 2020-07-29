@@ -12,7 +12,7 @@ Build the function using
 
 ``` bash
 cd ~/free5gc
-go build -o bin/gnb -x src/gnb/ran.go
+go build -o bin/gnb -x src/gnb/gnb.go
 ```
 
 Execute the function with the following command
@@ -22,28 +22,40 @@ cd bin/gnb
 ./gnb
 ```
 
+/!\ MongoDB needs to be running before launching the gNB
+
 ## Configuration
 
-The gNB `rancfg.cfg` configuration file is in the traditionnal `free5gc/config` folder.
+The gNB `gnbcfg.cfg` configuration file is located in `free5gc/config` folder. A sample is also present into `gnb/config` folder.
 
 ``` yaml
 info:
   version: 1.0.0
-  description: "5G-RAN initial local configuration"
+  description: "5G gNB initial local configuration"
 
 configuration:
   ranName: RAN-1
+  amfInterface:
+    ipv4Addr: "127.0.0.1"
+    port: 38412
+  upfInterface:
+    ipv4Addr: "10.200.200.102"
+    port: 2152
+  ngranInterface:
+    ipv4Addr: "127.0.0.1"
+    port: 9487
+  gtpInterface:
+    ipv4Addr: "10.200.200.1"
+    port: 2152
   ueSubnet: "60.60.0.0/24"
   ue:
 
     - SUPI: imsi-2089300007487
 
-      indentifier: 1
       ipv4: 60.60.0.10
 
     - SUPI: imsi-2089300007486
 
-      indentifier: 2
       ipv4: 60.60.0.20
   sbi:
     scheme: http
@@ -52,17 +64,34 @@ configuration:
   networkName:
     full: free5GC
     short: free
+
 ```
 
-**TODO ARRAY TO DESCRIBRE EACH LINE OF THE YAML FILE**
+The following Diagram gives represents configuration file above
 
-## Service Exposed
+![diagram_gNB](https://user-images.githubusercontent.com/41422704/88692144-07d6a700-d0fe-11ea-836d-56df98ffa93a.png)
 
-The goal of this gNB is to generate traffic for multiple UE, it exposes services
+## Service Exposed by REST Interface
 
-| Service                   | Url                                    |
-|---------------------------|----------------------------------------|
-| Stream MPEG-DASH manifest | /run/stream_dash/:identifier/:manifest |
-| Ping a Device             | /run/ping_device/:identifier/:device   |
+The gNB exposes two command interfaces
 
-**TODO UPDATE ARRAY AND ADD EXAMPLE TOPOLOGY**
+| Service                   | Url                                    | Status |
+|---------------------------|----------------------------------------|--------|
+| Stream MPEG-DASH manifest | /run/stream_dash/:identifier/:manifest |On going|
+| Ping a Device             | /run/ping_device/:identifier/:device   |Implemented|
+
+## Usage
+
+With simple tools such as curl, you can control the gNB using:
+
+```bash
+curl -d {} http://localhost:32000/run/ping_device/0/60.60.0.101
+````
+
+## TODO
+
+* [ ] Clean the code
+* [ ] Implement the gNB NF using Docker
+* [ ] Implement the DASH function
+* [ ] Proper implement of the tests
+* [ ] Add HTTPS option for REST Interface
