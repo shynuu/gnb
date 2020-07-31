@@ -8,6 +8,14 @@ The build and exection process is therefore the same as for the free5GC CN funct
 
 ## Installation
 
+First you need to clone this forked version of free5GC using:
+
+```bash
+git clone https://github.com/Srajdax/free5gc
+```
+
+Then
+
 Build the function using 
 
 ``` bash
