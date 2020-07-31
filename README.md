@@ -49,14 +49,9 @@ configuration:
     port: 2152
   ueSubnet: "60.60.0.0/24"
   ue:
-
     - SUPI: imsi-2089300007487
-
-      ipv4: 60.60.0.10
-
     - SUPI: imsi-2089300007486
 
-      ipv4: 60.60.0.20
   sbi:
     scheme: http
     ipv4Addr: 127.0.0.1
@@ -84,7 +79,7 @@ The gNB exposes two command interfaces
 
 With simple tools such as curl, you can control the gNB using:
 
-```bash
+``` bash
 curl -d {} http://localhost:32000/run/ping_device/0/60.60.0.101
 ````
 
