@@ -10,7 +10,7 @@ The build and exection process is therefore the same as for the free5GC CN funct
 
 First you need to clone this forked version of free5GC using:
 
-```bash
+``` bash
 git clone https://github.com/Srajdax/free5gc
 ```
 
@@ -57,9 +57,14 @@ configuration:
     port: 2152
   ueSubnet: "60.60.0.0/24"
   ue:
+
     - SUPI: imsi-2089300007487
+
+      ipv4: 60.60.0.1
+
     - SUPI: imsi-2089300007486
 
+      ipv4: 60.60.0.2
   sbi:
     scheme: http
     ipv4Addr: 127.0.0.1
@@ -67,7 +72,6 @@ configuration:
   networkName:
     full: free5GC
     short: free
-
 ```
 
 The following Diagram gives represents configuration file above
@@ -89,7 +93,11 @@ With simple tools such as curl, you can control the gNB using:
 
 ``` bash
 curl -d {} http://localhost:32000/run/ping_device/0/60.60.0.101
-````
+```
+
+## Limitation
+
+For the moment, only one PDU session could be established per UE to match with the UE IP configuration
 
 ## TODO
 

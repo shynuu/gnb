@@ -118,7 +118,7 @@ func Ping(destination string, userEquipment *context.UE) (err error) {
 	time.Sleep(1 * time.Second)
 
 	// Send the Dummy Packet with the ICMP Request
-	tt, b, err := forgeICMP("60.60.0.1", destination)
+	tt, b, err := forgeICMP(userEquipment.IPv4, destination)
 	if err != nil {
 		err = fmt.Errorf("Error sending the Packet")
 		return
