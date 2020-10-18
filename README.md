@@ -1,10 +1,24 @@
 # A Software gNB for free5GC
 
+![5G gNB](https://img.shields.io/badge/Golang-5G%20gNB-blue?logo=go)
+
+- [Installation](#installation)
+- [Before Launch](#before-launch)
+- [Configuration](#configuration)
+- [Service Exposed by REST Interface](#service-exposed-by-rest-interface)
+- [Usage](#usage)
+- [Limitation](#limitation)
+- [TODO](#todo)
+
 The gNB function was built on the model of the other free5GC CN functions using all the pattern and helper class defined by the free5GC team.
 
 It ensures a seamless and immediate integration into free5GC without requiring any other dependencies.
 
-The build and exection process is therefore the same as for the free5GC CN functions. 
+The build and exection process is therefore the same as for the free5GC CN functions.
+
+The gNB was tested using free5gc v3.0.3, v3.0.4 and free5gc-compose v3.0.4
+
+Feel free to contribute !
 
 ## Installation
 
@@ -30,7 +44,9 @@ cd bin/gnb
 ./gnb
 ```
 
-/!\ MongoDB needs to be running before launching the gNB
+## Before Launch
+
+**You need to ensure that mongodb is running on the gNB host and also have the credentials loaded into the mongo free5gc database on the Core Network host**
 
 ## Configuration
 
@@ -82,10 +98,10 @@ The following Diagram gives represents configuration file above
 
 The gNB exposes two command interfaces
 
-| Service                   | Url                                    | Status |
-|---------------------------|----------------------------------------|--------|
-| Stream MPEG-DASH manifest | /run/stream_dash/:identifier/:manifest |On going|
-| Ping a Device             | /run/ping_device/:identifier/:device   |Implemented|
+| Service                   | Url                                    | Status      |
+| ------------------------- | -------------------------------------- | ----------- |
+| Stream MPEG-DASH manifest | /run/stream_dash/:identifier/:manifest | On going    |
+| Ping a Device             | /run/ping_device/:identifier/:device   | Implemented |
 
 ## Usage
 
@@ -101,8 +117,8 @@ For the moment, only one PDU session could be established per UE to match with t
 
 ## TODO
 
+* [x] Implement the gNB NF using Docker
 * [ ] Clean the code
-* [ ] Implement the gNB NF using Docker
 * [ ] Implement the DASH function
 * [ ] Proper implement of the tests
 * [ ] Add HTTPS option for REST Interface
