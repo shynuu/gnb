@@ -23,6 +23,9 @@ type RANContext struct {
 	UriScheme       models.UriScheme
 	NfId            string
 	Name            string
+	Security        Security
+	Snssai          Snssai
+	PLMN            PLMN
 }
 
 type UE struct {
@@ -59,6 +62,30 @@ type NetworkName struct {
 	Full string `yaml:"full"`
 
 	Short string `yaml:"short,omitempty"`
+}
+
+type Security struct {
+	NetworkName string `yaml:"networkName"`
+
+	K string `yaml:"k"`
+
+	OPC string `yaml:"opc"`
+
+	OP string `yaml:"op"`
+
+	SQN string `yaml:"sqn"`
+}
+
+type Snssai struct {
+	Sst int32 `yaml:"sst,omitempty"`
+
+	Sd string `yaml:"sd,omitempty"`
+}
+
+type PLMN struct {
+	MNC string `yaml:"mnc,omitempty"`
+
+	MCC string `yaml:"mcc,omitempty"`
 }
 
 // Create new AMF context

@@ -3,7 +3,6 @@ package forge
 import (
 	"encoding/hex"
 	"fmt"
-	"free5gc/lib/CommonConsumerTestData/UDM/TestGenAuthData"
 	"free5gc/lib/CommonConsumerTestData/UDR/TestRegistrationProcedure"
 	"free5gc/lib/nas"
 	"free5gc/lib/nas/nasMessage"
@@ -74,19 +73,19 @@ func ipv4HeaderChecksum(hdr *ipv4.Header) uint32 {
 
 func getAuthSubscription() (authSubs models.AuthenticationSubscription) {
 	authSubs.PermanentKey = &models.PermanentKey{
-		PermanentKeyValue: TestGenAuthData.MilenageTestSet19.K,
+		PermanentKeyValue: context.RAN_Self().Security.K,
 	}
 	authSubs.Opc = &models.Opc{
-		OpcValue: TestGenAuthData.MilenageTestSet19.OPC,
+		OpcValue: context.RAN_Self().Security.OPC,
 	}
 	authSubs.Milenage = &models.Milenage{
 		Op: &models.Op{
-			OpValue: TestGenAuthData.MilenageTestSet19.OP,
+			OpValue: context.RAN_Self().Security.OP,
 		},
 	}
 	authSubs.AuthenticationManagementField = "8000"
 
-	authSubs.SequenceNumber = TestGenAuthData.MilenageTestSet19.SQN
+	authSubs.SequenceNumber = context.RAN_Self().Security.SQN
 	authSubs.AuthenticationMethod = models.AuthMethod__5_G_AKA
 	return
 }
@@ -297,7 +296,7 @@ func PDUSessionEstablishment(userEquipment *context.UE) (amfConn *sctp.SCTPConn,
 		return
 	}
 	rand := nasPdu.AuthenticationRequest.GetRANDValue()
-	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], "5G:mnc093.mcc208.3gppnetwork.org")
+	resStat := ue.DeriveRESstarAndSetKey(ue.AuthenticationSubs, rand[:], context.RAN_Self().Security.NetworkName)
 
 	// send NAS Authentication Response
 	pdu := nasTestpacket.GetAuthenticationResponse(resStat, "")
@@ -389,8 +388,8 @@ func PDUSessionEstablishment(userEquipment *context.UE) (amfConn *sctp.SCTPConn,
 	// send GetPduSessionEstablishmentRequest Msg
 	// Slice Parameters
 	sNssai := models.Snssai{
-		Sst: 1,
-		Sd:  "010203",
+		Sst: context.RAN_Self().Snssai.Sst,
+		Sd:  context.RAN_Self().Snssai.Sd,
 	}
 	pdu = nasTestpacket.GetUlNasTransport_PduSessionEstablishmentRequest(10, nasMessage.ULNASTransportRequestTypeInitialRequest, "internet", &sNssai)
 	pdu, err = procedures.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCiphered, true, false)

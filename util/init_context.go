@@ -41,4 +41,7 @@ func InitRanContext(context *context.RANContext) {
 	context.UEList = configuration.UEList
 	context.NGRANInterface = configuration.NGRANInterface
 	context.GTPInterface = configuration.GTPInterface
+	context.Security = configuration.Security
+	context.Snssai = configuration.Snssai
+	context.PLMN = configuration.PLMN
 }

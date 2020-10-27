@@ -36,6 +36,12 @@ type Configuration struct {
 	NGRANInterface context.NGRANInterface `yaml:"ngranInterface,omitempty"`
 
 	GTPInterface context.GTPInterface `yaml:"gtpInterface,omitempty"`
+
+	Security context.Security `yaml:"security,omitempty"`
+
+	Snssai context.Snssai `yaml:"snssai,omitempty"`
+
+	PLMN context.PLMN `yaml:"plmn,omitempty"`
 }
 
 type Sbi struct {
