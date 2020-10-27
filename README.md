@@ -10,7 +10,7 @@
   - [HTTP GET - /run/establish_pdu/:index](#http-get---runestablish_pduindex)
   - [HTTP GET - /run/ping_device/:index/:device](#http-get---runping_deviceindexdevice)
 - [Usage](#usage)
-- [Limitation](#limitation)
+- [Limitations](#limitations)
 
 The gNB function was built on the model of the other free5GC CN functions using all the pattern and helper class defined by the free5GC team.
 
@@ -144,6 +144,6 @@ After launching the gnb, with simple tools such as curl, you can control the gNB
 curl -d {} http://localhost:32000/run/ping_device/0/60.60.0.101
 ```
 
-## Limitation
+## Limitations
 
 For the moment, only one PDU session could be established per UE to match with the UE IP configuration
