@@ -12,13 +12,13 @@ import (
 	"free5gc/lib/ngap"
 	"free5gc/lib/openapi/models"
 	"free5gc/src/gnb/context"
+	"free5gc/src/gnb/helper"
 	"free5gc/src/gnb/interfaces"
 	"free5gc/src/gnb/procedures"
 	"free5gc/src/gnb/uee"
 	"net"
 	"time"
 
-	"git.cs.nctu.edu.tw/calee/sctp"
 	"golang.org/x/net/icmp"
 	"golang.org/x/net/ipv4"
 )
@@ -110,39 +110,34 @@ func getSmPolicyData() (smPolicyData models.SmPolicyData) {
 	return TestRegistrationProcedure.TestSmPolicyDataTable[TestRegistrationProcedure.FREE5GC_CASE]
 }
 
+// PDUSessionEstablish function
+func PDUSessionEstablish(userEquipment *context.UE) (err error) {
+
+	pduSession, err := PDUSessionEstablishment(userEquipment)
+	if err != nil {
+		err = fmt.Errorf("Error Connecting to UPF")
+		return
+	}
+	helper.PDUSessionList = append(helper.PDUSessionList, pduSession)
+	return
+}
+
 // Ping function
-func Ping(destination string, userEquipment *context.UE) (err error) {
-	// Establish PDU Session
-	amfConn, upfConn, ue, err := PDUSessionEstablishment(userEquipment)
-	time.Sleep(1 * time.Second)
+func Ping(destination string, pduSession *helper.PDUSession) (err error) {
 
 	// Send the Dummy Packet with the ICMP Request
-	tt, b, err := forgeICMP(userEquipment.IPv4, destination)
+	tt, b, err := forgeICMP(pduSession.IPv4, destination)
 	if err != nil {
 		err = fmt.Errorf("Error sending the Packet")
 		return
 	}
-	sendICMP(upfConn, tt, b)
+	sendICMP(pduSession.Socket, tt, b)
 	time.Sleep(1 * time.Second)
-
-	// Release PDU Session
-	// PDUSessionRelease()
-
-	// Clean the test data
-	CleanTestData(ue)
-	amfConn.Close()
 	return
 }
 
-func CleanTestData(ue *uee.RanUeContext) {
-
-	procedures.DelAuthSubscriptionToMongoDB(ue.Supi)
-	procedures.DelAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, "20893")
-	procedures.DelSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, "20893")
-
-}
-
-func PDUSessionEstablishment(userEquipment *context.UE) (amfConn *sctp.SCTPConn, upfConn *net.UDPConn, ue *uee.RanUeContext, err error) {
+// PDUSessionEstablishment function
+func PDUSessionEstablishment(userEquipment *context.UE) (pduSession *helper.PDUSession, err error) {
 
 	var n int
 	var sendMsg []byte
@@ -154,7 +149,7 @@ func PDUSessionEstablishment(userEquipment *context.UE) (amfConn *sctp.SCTPConn,
 	ranN3Port := context.RAN_Self().NGRANInterface.Port
 
 	// RAN connect to AMF
-	amfConn, err = interfaces.ConnectToAmf(amfN3IpAddr, ranN3IpAddr, amfN3Port, ranN3Port)
+	amfConn, err := interfaces.ConnectToAmf(amfN3IpAddr, ranN3IpAddr, amfN3Port, ranN3Port)
 	if err != nil {
 		err = fmt.Errorf("Error Connecting to AMF")
 		return
@@ -166,7 +161,7 @@ func PDUSessionEstablishment(userEquipment *context.UE) (amfConn *sctp.SCTPConn,
 	upfGTPPort := context.RAN_Self().UpfInterface.Port
 
 	// RAN connect to UPF
-	upfConn, err = interfaces.ConnectToUpf(ranGTPIpAddr, upfGTPIpAddr, ranGTPPort, upfGTPPort)
+	upfConn, err := interfaces.ConnectToUpf(ranGTPIpAddr, upfGTPIpAddr, ranGTPPort, upfGTPPort)
 	if err != nil {
 		err = fmt.Errorf("Error Connecting to UPF")
 		return
@@ -200,63 +195,9 @@ func PDUSessionEstablishment(userEquipment *context.UE) (amfConn *sctp.SCTPConn,
 
 	// New UE
 	// ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA2, security.AlgIntegrity128NIA2)
-	ue = uee.NewRanUeContext(userEquipment.Supi, 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
+	ue := uee.NewRanUeContext(userEquipment.Supi, 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
 	ue.AuthenticationSubs = getAuthSubscription()
-	// insert UE data to MongoDB
-
-	servingPlmnId := "20893"
-	procedures.InsertAuthSubscriptionToMongoDB(ue.Supi, ue.AuthenticationSubs)
-	getData := procedures.GetAuthSubscriptionFromMongoDB(ue.Supi)
-	if getData == nil {
-		err = fmt.Errorf("Error getData")
-		return
-	}
-	{
-		amData := getAccessAndMobilitySubscriptionData()
-		procedures.InsertAccessAndMobilitySubscriptionDataToMongoDB(ue.Supi, amData, servingPlmnId)
-		getData := procedures.GetAccessAndMobilitySubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
-		if getData == nil {
-			err = fmt.Errorf("Error getData")
-			return
-		}
-	}
-	{
-		smfSelData := getSmfSelectionSubscriptionData()
-		procedures.InsertSmfSelectionSubscriptionDataToMongoDB(ue.Supi, smfSelData, servingPlmnId)
-		getData := procedures.GetSmfSelectionSubscriptionDataFromMongoDB(ue.Supi, servingPlmnId)
-		if getData == nil {
-			err = fmt.Errorf("Error getData")
-			return
-		}
-	}
-	{
-		smSelData := getSessionManagementSubscriptionData()
-		procedures.InsertSessionManagementSubscriptionDataToMongoDB(ue.Supi, servingPlmnId, smSelData)
-		getData := procedures.GetSessionManagementDataFromMongoDB(ue.Supi, servingPlmnId)
-		if getData == nil {
-			err = fmt.Errorf("Error getData")
-			return
-		}
-	}
-	{
-		amPolicyData := getAmPolicyData()
-		procedures.InsertAmPolicyDataToMongoDB(ue.Supi, amPolicyData)
-		getData := procedures.GetAmPolicyDataFromMongoDB(ue.Supi)
-		if getData == nil {
-			err = fmt.Errorf("Error getData")
-			return
-		}
-	}
-	{
-		smPolicyData := getSmPolicyData()
-		procedures.InsertSmPolicyDataToMongoDB(ue.Supi, smPolicyData)
-		getData := procedures.GetSmPolicyDataFromMongoDB(ue.Supi)
-		if getData == nil {
-			err = fmt.Errorf("Error getData")
-			return
-		}
-	}
 
 	// send InitialUeMessage(Registration Request)(imsi-2089300007487)
 	mobileIdentity5GS := nasType.MobileIdentity5GS{
@@ -431,11 +372,12 @@ func PDUSessionEstablishment(userEquipment *context.UE) (amfConn *sctp.SCTPConn,
 		err = fmt.Errorf("Error sending NGAP-PDU Session Resource Setup Response")
 		return
 	}
+
+	amfConn.Close()
+
+	pduSession = &helper.PDUSession{Socket: upfConn, IPv4: userEquipment.IPv4}
+
 	return
-}
-
-func PDUSessionRelease() {
-
 }
 
 func sendICMP(upfConn *net.UDPConn, tt []byte, b []byte) (err error) {

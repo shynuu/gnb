@@ -24,11 +24,11 @@ Feel free to contribute !
 ## Roadmap
 
 - [x] Add parameters to the configuration instead of hardcoding them directly
-- [ ] Separate the PDU Session Establishment and the processing of the Data Plane
-- [ ] Maintain the GTP UDP Socket Open
+- [x] Separate the PDU Session Establishment and the processing of the Data Plane
+- [x] Maintain the GTP UDP Socket Open
 - [ ] Refactor the base code of the gNB using the latest version of free5gc 3.0.4
 - [ ] Use the new helper class of free5gc v3.0.4
-- [ ] Remove the use of mongo database
+- [x] Remove the use of mongo database
 - [ ] Forge other packets than ICMP
 - [ ] Establish a kernel based tunnel to allow other traffic generation other than the hardcoded one in go language
 
@@ -36,7 +36,7 @@ Feel free to contribute !
 
 Follow the installation instructions provided by free5gc repository, but instead of clonine the project: `https://github.com/free5gc/free5gc.git`. Clone this forked version of the project `https://github.com/Srajdax/free5gc`.
 
-The compilation and installation procedure of the gNB is the same as the other free5gc core functions, you can the function using 
+The compilation and installation procedure of the gNB is the same as the other free5gc core functions, you can compile the functions using 
 
 ``` bash
 cd ~/free5gc
@@ -107,7 +107,7 @@ configuration:
     short: free
 ```
 
-The following Diagram gives represents configuration file above
+The following Diagram represents the configuration file above
 
 ![diagram_gNB](https://user-images.githubusercontent.com/41422704/88692144-07d6a700-d0fe-11ea-836d-56df98ffa93a.png)
 

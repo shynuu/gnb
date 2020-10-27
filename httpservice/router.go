@@ -60,7 +60,7 @@ func AddService(engine *gin.Engine) *gin.RouterGroup {
 
 // Index is the index handler.
 func Index(c *gin.Context) {
-	c.String(http.StatusOK, "Hello World!")
+	c.String(http.StatusOK, "Index Handler Hello World")
 }
 
 var routes = Routes{
@@ -72,16 +72,16 @@ var routes = Routes{
 	},
 
 	{
-		"StreamDASH",
+		"EstablishPDU",
 		strings.ToUpper("Post"),
-		"/stream_dash/:identifier/:manifest",
-		StreamDASH,
+		"/establish_pdu/:index/",
+		EstablishPDU,
 	},
 
 	{
 		"PingDevice",
 		strings.ToUpper("Post"),
-		"/ping_device/:identifier/:device",
+		"/ping_device/:index/:device",
 		PingDevice,
 	},
 }

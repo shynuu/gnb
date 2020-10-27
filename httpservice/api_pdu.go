@@ -3,15 +3,16 @@ package httpservice
 import (
 	"free5gc/lib/openapi"
 	"free5gc/lib/openapi/models"
+	"free5gc/src/gnb/context"
+	"free5gc/src/gnb/forge"
 	"free5gc/src/gnb/logger"
 	"net/http"
-
-	"fmt"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-func StreamDASH(c *gin.Context) {
+func EstablishPDU(c *gin.Context) {
 	var policyUpdate models.PolicyUpdate
 
 	requestBody, err := c.GetRawData()
@@ -40,13 +41,13 @@ func StreamDASH(c *gin.Context) {
 		return
 	}
 
-	identifier := c.Params.ByName("identifier")
-	manifestUrl := c.Params.ByName("manifest_url")
-	fmt.Println(identifier)
-	fmt.Println(manifestUrl)
+	identifier := c.Params.ByName("index")
+	index, err := strconv.Atoi(identifier)
+	// Establish the PDU Session
+	err = forge.PDUSessionEstablish(&context.RAN_Self().UEList[index])
 
-	//TODO : parse manifest, download each chunk of manifest
-	resp := gin.H{"response": "download success"}
+	resp := gin.H{"response": "pdu success"}
+
 	responseBody, err := openapi.Serialize(resp, "application/json")
 	if err != nil {
 		logger.HttpServiceLog.Errorln(err)

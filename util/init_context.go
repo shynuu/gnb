@@ -1,7 +1,6 @@
 package util
 
 import (
-	"free5gc/lib/MongoDBLibrary"
 	"free5gc/lib/openapi/models"
 	"free5gc/src/gnb/context"
 	"free5gc/src/gnb/factory"
@@ -11,7 +10,6 @@ import (
 )
 
 func InitRanContext(context *context.RANContext) {
-	MongoDBLibrary.SetMongoDB("free5gc", "mongodb://127.0.0.1:27017")
 	config := factory.RanConfig
 	logger.UtilLog.Infof("gNB config Info: Version[%s] Description[%s]", config.Info.Version, config.Info.Description)
 	configuration := config.Configuration

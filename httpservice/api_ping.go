@@ -3,13 +3,11 @@ package httpservice
 import (
 	"free5gc/lib/openapi"
 	"free5gc/lib/openapi/models"
-	"free5gc/src/gnb/context"
 	"free5gc/src/gnb/forge"
+	"free5gc/src/gnb/helper"
 	"free5gc/src/gnb/logger"
 	"net/http"
 	"strconv"
-
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -43,13 +41,10 @@ func PingDevice(c *gin.Context) {
 		return
 	}
 
-	identifier := c.Params.ByName("identifier")
+	identifier := c.Params.ByName("index")
 	index, err := strconv.Atoi(identifier)
 	device := c.Params.ByName("device")
-	err = forge.Ping(device, &context.RAN_Self().UEList[index])
-
-	fmt.Println(identifier)
-	fmt.Println(device)
+	err = forge.Ping(device, helper.PDUSessionList[index])
 
 	resp := gin.H{"response": "ping success"}
 	responseBody, err := openapi.Serialize(resp, "application/json")
