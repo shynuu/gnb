@@ -74,7 +74,7 @@ var routes = Routes{
 	{
 		"EstablishPDU",
 		strings.ToUpper("Post"),
-		"/establish_pdu/:index/",
+		"/establish_pdu/:index",
 		EstablishPDU,
 	},
 

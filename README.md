@@ -7,7 +7,8 @@
 - [Before Launch](#before-launch)
 - [Configuration](#configuration)
 - [Service Exposed by REST Interface](#service-exposed-by-rest-interface)
-  - [HTTP GET - /run/ping_device/:identifier/:device](#http-get---runping_deviceidentifierdevice)
+  - [HTTP GET - /run/establish_pdu/:index](#http-get---runestablish_pduindex)
+  - [HTTP GET - /run/ping_device/:index/:device](#http-get---runping_deviceindexdevice)
 - [Usage](#usage)
 - [Limitation](#limitation)
 
@@ -31,6 +32,8 @@ Feel free to contribute !
 - [x] Remove the use of mongo database
 - [ ] Forge other packets than ICMP
 - [ ] Establish a kernel based tunnel to allow other traffic generation other than the hardcoded one in go language
+
+**Last commit needs to be tested**
 
 ## Installation
 
@@ -115,15 +118,22 @@ The following Diagram represents the configuration file above
 
 The gNB exposes two command interfaces
 
-| Service       | Url                                  | Status      |
-| ------------- | ------------------------------------ | ----------- |
-| Ping a Device | /run/ping_device/:identifier/:device | Implemented |
+| Service                 | Url                                  | Status      |
+| ----------------------- | ------------------------------------ | ----------- |
+| Establish a PDU Session | /run/establish_pdu/:index            | Implemented |
+| Ping a Device           | /run/ping_device/:identifier/:device | Implemented |
 
-### HTTP GET - /run/ping_device/:identifier/:device
+### HTTP GET - /run/establish_pdu/:index 
 
 GET Parameters:
 
-- identifier: The identifier of the PDU Session. Currently the index of the List containing all the PDU Sessions
+- index: The identifier of the UE in the provided UE config list (gnbcfg.cfg)
+
+### HTTP GET - /run/ping_device/:index/:device
+
+GET Parameters:
+
+- index: The identifier of the PDU Session. Currently the index of the List containing all the PDU Sessions
 - device: The destination IP to ping.
 
 ## Usage
