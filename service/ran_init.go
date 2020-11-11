@@ -68,7 +68,7 @@ func (*RAN) Initialize(c *cli.Context) {
 	if app.ContextSelf().Logger.RAN.DebugLevel != "" {
 		level, err := logrus.ParseLevel(app.ContextSelf().Logger.RAN.DebugLevel)
 		if err != nil {
-			initLog.Warnf("Log level [%s] is not valid, set to [info] level", app.ContextSelf().Logger.RAN.DebugLevel)
+			initLog.Warnf("Log level [%s] is not valid, set to [info] level ", app.ContextSelf().Logger.RAN.DebugLevel)
 			logger.SetLogLevel(logrus.InfoLevel)
 		} else {
 			logger.SetLogLevel(level)
