@@ -206,7 +206,7 @@ func PDUSessionEstablishment(userEquipment *context.UE) (pduSession *helper.PDUS
 	}
 
 	ueSecurityCapability := setUESecurityCapability(ue)
-	registrationRequest := nasTestpacket.GetRegistrationRequestWith5GMM(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, nil, ueSecurityCapability)
+	registrationRequest := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, ueSecurityCapability, nil, nil, nil)
 	sendMsg, err = procedures.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	if err != nil {
 		err = fmt.Errorf("Error getData")
