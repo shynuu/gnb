@@ -31,6 +31,7 @@ This project provides an unofficial gNB for the free5gc project as the official 
 
 ## Roadmap
 
+- [ ] Update the registration procedure using the version v3.0.4
 - [x] Add parameters to the configuration instead of hardcoding them directly
 - [x] Separate the PDU Session Establishment and the processing of the Data Plane
 - [x] Maintain the GTP UDP Socket Open
@@ -68,6 +69,8 @@ You need to ensure that:
 
 - The configuration of the `gnbcfg.cfg` is consistent with your free5gc `uerouting.yaml`, `smfcfg.cfg` and `upfcfg.cfg`
 - Ensure that mongodb is running on the gNB host and also have the credentials loaded into the mongo free5gc database on the Core Network host
+
+You will find a `dump` folder which contains the credentials for the imsi *imsi-2089300007487*. The credentials can be restored to the free5gc mongo database by using the mongorestore command `mongorestore dump`
 
 ## Configuration
 

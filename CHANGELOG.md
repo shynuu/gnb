@@ -1,5 +1,9 @@
 # CHANGELOG of gNB
 
+## 2020-12-11
+
+* Refactor the code using the latest free5gc release v3.0.4
+
 ## 2020-11-11
 
 * Refactor the code using the latest free5gc release v3.0.4
