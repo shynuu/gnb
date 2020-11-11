@@ -1,8 +1,12 @@
-# CHANGELOG of RAN
+# CHANGELOG of gNB
+
+## 2020-11-11
+
+* Refactor the code using the latest free5gc release v3.0.4
 
 ## 2020-27-10
 
-* Add helper class for packet handling from free5gc v.3.0.4
+* Add helper class for packet handling from free5gc v3.0.4
 * Remove the need for mongodb
 * The PDU Session and the Data plane processing are now disaggregated
 * Maintain the UPD Socket open

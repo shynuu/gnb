@@ -2,6 +2,7 @@
 
 ![5G gNB](https://img.shields.io/badge/Golang-5G%20gNB-blue?logo=go)
 
+- [Disclaimer](#disclaimer)
 - [Roadmap](#roadmap)
 - [Installation](#installation)
 - [Before Launch](#before-launch)
@@ -22,15 +23,23 @@ The gNB was tested using free5gc v3.0.3, v3.0.4 and free5gc-compose v3.0.4
 
 Feel free to contribute !
 
+## Disclaimer
+
+This project provides an unofficial gNB for the free5gc project as the official test scripts does not cover all use-cases. This gNB is designed and tested only against free5gc, thus it follows some asumptions I have found into free5gc code:
+
+- The TEID for the GTP-U tunnel is incremented by 1 at each PDU session request, therefore I assume the the N-PDU session established with the UPF would have the TEID = N value for the tunnel 
+
 ## Roadmap
 
 - [x] Add parameters to the configuration instead of hardcoding them directly
 - [x] Separate the PDU Session Establishment and the processing of the Data Plane
 - [x] Maintain the GTP UDP Socket Open
-- [ ] Refactor the base code of the gNB using the latest version of free5gc 3.0.4
+- [x] Refactor the base code of the gNB using the latest version of free5gc 3.0.4
 - [ ] Use the new helper class of free5gc v3.0.4
 - [x] Remove the use of mongo database
-- [ ] Forge other packets than ICMP
+- [ ] Forge other packets than ICMP: HTTP and raw UDP socket
+- [ ] Implement QoS at IP level
+- [ ] Implement PDU Session Release procedure
 - [ ] Establish a kernel based tunnel to allow other traffic generation other than the hardcoded one in go language
 
 **Last commit needs to be tested**
