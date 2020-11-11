@@ -2,11 +2,12 @@ package interfaces
 
 import (
 	"fmt"
-	"free5gc/lib/ngap/ngapSctp"
 	"net"
 
 	"git.cs.nctu.edu.tw/calee/sctp"
 )
+
+const ngapPPID uint32 = 0x3c000000
 
 func getNgapIp(amfIP, ranIP string, amfPort, ranPort int) (amfAddr, ranAddr *sctp.SCTPAddr, err error) {
 	ips := []net.IPAddr{}
@@ -44,7 +45,7 @@ func ConnectToAmf(amfIP, ranIP string, amfPort, ranPort int) (*sctp.SCTPConn, er
 		return nil, err
 	}
 	info, _ := conn.GetDefaultSentParam()
-	info.PPID = ngapSctp.NGAP_PPID
+	info.PPID = ngapPPID
 	err = conn.SetDefaultSentParam(info)
 	if err != nil {
 		return nil, err

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"free5gc/lib/http2_util"
 	"free5gc/lib/path_util"
-	"free5gc/src/amf/ngap/sctp"
 	"free5gc/src/app"
 	"free5gc/src/gnb/context"
 	"free5gc/src/gnb/factory"
@@ -44,9 +43,6 @@ var ranCLi = []cli.Flag{
 }
 
 var initLog *logrus.Entry
-
-// Peut-être à supprimer ?
-var sctpListener *sctp.SCTPListener
 
 func init() {
 	initLog = logger.InitLog
@@ -189,37 +185,3 @@ func (amf *RAN) Exec(c *cli.Context) error {
 
 	return err
 }
-
-// Used in RAN planned removal procedure
-// func (amf *RAN) Terminate() {
-// 	logger.InitLog.Infof("Terminating RAN...")
-// 	amfSelf := context.AMF_Self()
-
-// 	// TODO: forward registered UE contexts to target RAN in the same RAN set if there is one
-
-// 	// deregister with NRF
-// 	problemDetails, err := consumer.SendDeregisterNFInstance()
-// 	if problemDetails != nil {
-// 		logger.InitLog.Errorf("Deregister NF instance Failed Problem[%+v]", problemDetails)
-// 	} else if err != nil {
-// 		logger.InitLog.Errorf("Deregister NF instance Error[%+v]", err)
-// 	} else {
-// 		logger.InitLog.Infof("[RAN] Deregister from NRF successfully")
-// 	}
-
-// 	// send RAN status indication to ran to notify ran that this RAN will be unavailable
-// 	logger.InitLog.Infof("Send RAN Status Indication to Notify RANs due to RAN terminating")
-// 	unavailableGuamiList := ngap_message.BuildUnavailableGUAMIList(amfSelf.ServedGuamiList)
-// 	amfSelf.AmfRanPool.Range(func(key, value interface{}) bool {
-// 		ran := value.(*context.AmfRan)
-// 		ngap_message.SendAMFStatusIndication(ran, unavailableGuamiList)
-// 		return true
-// 	})
-
-// 	logger.InitLog.Infof("Close SCTP server...")
-// 	sctpListener.Close()
-// 	logger.InitLog.Infof("SCTP server closed")
-
-// 	callback.SendAmfStatusChangeNotify((string)(models.StatusChange_UNAVAILABLE), amfSelf.ServedGuamiList)
-// 	logger.InitLog.Infof("RAN terminated")
-// }
