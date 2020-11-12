@@ -4,8 +4,8 @@ import (
 	"free5gc/lib/openapi"
 	"free5gc/lib/openapi/models"
 	"free5gc/src/gnb/context"
-	"free5gc/src/gnb/forge"
 	"free5gc/src/gnb/logger"
+	"free5gc/src/gnb/procedure"
 	"net/http"
 	"strconv"
 
@@ -44,7 +44,7 @@ func EstablishPDU(c *gin.Context) {
 	identifier := c.Params.ByName("index")
 	index, err := strconv.Atoi(identifier)
 	// Establish the PDU Session
-	err = forge.PDUSessionEstablish(&context.RAN_Self().UEList[index])
+	err = procedure.PDUSessionEstablish(&context.RAN_Self().UEList[index])
 
 	resp := gin.H{"response": "pdu success"}
 

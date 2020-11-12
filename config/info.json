@@ -1,0 +1,15 @@
+{
+    "subscriptionData.provisionedData.amData": {
+        "authenticationMethod": 0,
+        "permanentKey": 0,
+        "permanentKey": 0,
+        "sequenceNumber": 0,
+        "authenticationManagementField": 0,
+        "vectorAlgorithm": 0,
+        "milenage": 0,
+        "tuak": 0,
+        "opc": 0,
+        "topc": 0,
+        "sharedAuthenticationSubscriptionId": 0
+    }
+}
