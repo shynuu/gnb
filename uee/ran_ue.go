@@ -2,14 +2,13 @@ package uee
 
 import (
 	"encoding/hex"
-	"free5gc/lib/CommonConsumerTestData/UDM/TestGenAuthData"
-	"free5gc/lib/CommonConsumerTestData/UDR/TestRegistrationProcedure"
 	"free5gc/lib/UeauCommon"
 	"free5gc/lib/milenage"
 	"free5gc/lib/nas/nasMessage"
 	"free5gc/lib/nas/nasType"
 	"free5gc/lib/nas/security"
 	"free5gc/lib/openapi/models"
+	"free5gc/src/gnb/context"
 	"regexp"
 
 	"github.com/calee0219/fatal"
@@ -62,29 +61,9 @@ func GetAuthSubscription(k, opc, op string) models.AuthenticationSubscription {
 	}
 	authSubs.AuthenticationManagementField = "8000"
 
-	authSubs.SequenceNumber = TestGenAuthData.MilenageTestSet19.SQN
+	authSubs.SequenceNumber = context.RAN_Self().Security.SQN
 	authSubs.AuthenticationMethod = models.AuthMethod__5_G_AKA
 	return authSubs
-}
-
-func GetAccessAndMobilitySubscriptionData() (amData models.AccessAndMobilitySubscriptionData) {
-	return TestRegistrationProcedure.TestAmDataTable[TestRegistrationProcedure.FREE5GC_CASE]
-}
-
-func GetSmfSelectionSubscriptionData() (smfSelData models.SmfSelectionSubscriptionData) {
-	return TestRegistrationProcedure.TestSmfSelDataTable[TestRegistrationProcedure.FREE5GC_CASE]
-}
-
-func GetSessionManagementSubscriptionData() (smfSelData models.SessionManagementSubscriptionData) {
-	return TestRegistrationProcedure.TestSmSelDataTable[TestRegistrationProcedure.FREE5GC_CASE]
-}
-
-func GetAmPolicyData() (amPolicyData models.AmPolicyData) {
-	return TestRegistrationProcedure.TestAmPolicyDataTable[TestRegistrationProcedure.FREE5GC_CASE]
-}
-
-func GetSmPolicyData() (smPolicyData models.SmPolicyData) {
-	return TestRegistrationProcedure.TestSmPolicyDataTable[TestRegistrationProcedure.FREE5GC_CASE]
 }
 
 func NewRanUeContext(supi string, ranUeNgapId int64, cipheringAlg, integrityAlg uint8) *RanUeContext {

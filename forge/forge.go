@@ -22,23 +22,6 @@ import (
 	"golang.org/x/net/ipv4"
 )
 
-func ipv4HeaderChecksum(hdr *ipv4.Header) uint32 {
-	var Checksum uint32
-	Checksum += uint32((hdr.Version<<4|(20>>2&0x0f))<<8 | hdr.TOS)
-	Checksum += uint32(hdr.TotalLen)
-	Checksum += uint32(hdr.ID)
-	Checksum += uint32((hdr.FragOff & 0x1fff) | (int(hdr.Flags) << 13))
-	Checksum += uint32((hdr.TTL << 8) | (hdr.Protocol))
-
-	src := hdr.Src.To4()
-	Checksum += uint32(src[0])<<8 | uint32(src[1])
-	Checksum += uint32(src[2])<<8 | uint32(src[3])
-	dst := hdr.Dst.To4()
-	Checksum += uint32(dst[0])<<8 | uint32(dst[1])
-	Checksum += uint32(dst[2])<<8 | uint32(dst[3])
-	return ^(Checksum&0xffff0000>>16 + Checksum&0xffff)
-}
-
 // PDUSessionEstablish function
 func PDUSessionEstablish(userEquipment *context.UE) (err error) {
 
@@ -349,7 +332,7 @@ func forgeICMP(source string, destination string) (tt []byte, b []byte, err erro
 		Dst:      net.ParseIP(destination).To4(),
 		ID:       1,
 	}
-	checksum := ipv4HeaderChecksum(&ipv4hdr)
+	checksum := uee.CalculateIpv4HeaderChecksum(&ipv4hdr)
 	ipv4hdr.Checksum = int(checksum)
 
 	// Encoding header into Binary values (Byte Array)
