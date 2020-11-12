@@ -3,18 +3,18 @@ package procedures
 import (
 	"free5gc/lib/nas"
 	"free5gc/lib/ngap/ngapType"
+	"free5gc/src/gnb/uee"
 )
 
-func GetNasPdu(msg *ngapType.DownlinkNASTransport) (m *nas.Message) {
+func GetNasPdu(ue *uee.RanUeContext, msg *ngapType.DownlinkNASTransport) (m *nas.Message) {
 	for _, ie := range msg.ProtocolIEs.List {
 		if ie.Id.Value == ngapType.ProtocolIEIDNASPDU {
 			pkg := []byte(ie.Value.NASPDU.Value)
-			m = new(nas.Message)
-			err := m.PlainNasDecode(&pkg)
+			m, err := NASDecode(ue, nas.GetSecurityHeaderType(pkg), pkg)
 			if err != nil {
 				return nil
 			}
-			return
+			return m
 		}
 	}
 	return nil

@@ -3,7 +3,6 @@ package forge
 import (
 	"encoding/hex"
 	"fmt"
-	"free5gc/lib/CommonConsumerTestData/UDR/TestRegistrationProcedure"
 	"free5gc/lib/nas"
 	"free5gc/lib/nas/nasMessage"
 	"free5gc/lib/nas/nasTestpacket"
@@ -69,45 +68,6 @@ func ipv4HeaderChecksum(hdr *ipv4.Header) uint32 {
 	Checksum += uint32(dst[0])<<8 | uint32(dst[1])
 	Checksum += uint32(dst[2])<<8 | uint32(dst[3])
 	return ^(Checksum&0xffff0000>>16 + Checksum&0xffff)
-}
-
-func getAuthSubscription() (authSubs models.AuthenticationSubscription) {
-	authSubs.PermanentKey = &models.PermanentKey{
-		PermanentKeyValue: context.RAN_Self().Security.K,
-	}
-	authSubs.Opc = &models.Opc{
-		OpcValue: context.RAN_Self().Security.OPC,
-	}
-	authSubs.Milenage = &models.Milenage{
-		Op: &models.Op{
-			OpValue: context.RAN_Self().Security.OP,
-		},
-	}
-	authSubs.AuthenticationManagementField = "8000"
-
-	authSubs.SequenceNumber = context.RAN_Self().Security.SQN
-	authSubs.AuthenticationMethod = models.AuthMethod__5_G_AKA
-	return
-}
-
-func getAccessAndMobilitySubscriptionData() (amData models.AccessAndMobilitySubscriptionData) {
-	return TestRegistrationProcedure.TestAmDataTable[TestRegistrationProcedure.FREE5GC_CASE]
-}
-
-func getSmfSelectionSubscriptionData() (smfSelData models.SmfSelectionSubscriptionData) {
-	return TestRegistrationProcedure.TestSmfSelDataTable[TestRegistrationProcedure.FREE5GC_CASE]
-}
-
-func getSessionManagementSubscriptionData() (smfSelData models.SessionManagementSubscriptionData) {
-	return TestRegistrationProcedure.TestSmSelDataTable[TestRegistrationProcedure.FREE5GC_CASE]
-}
-
-func getAmPolicyData() (amPolicyData models.AmPolicyData) {
-	return TestRegistrationProcedure.TestAmPolicyDataTable[TestRegistrationProcedure.FREE5GC_CASE]
-}
-
-func getSmPolicyData() (smPolicyData models.SmPolicyData) {
-	return TestRegistrationProcedure.TestSmPolicyDataTable[TestRegistrationProcedure.FREE5GC_CASE]
 }
 
 // PDUSessionEstablish function
@@ -195,9 +155,9 @@ func PDUSessionEstablishment(userEquipment *context.UE) (pduSession *helper.PDUS
 
 	// New UE
 	// ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA2, security.AlgIntegrity128NIA2)
-	ue := uee.NewRanUeContext(userEquipment.Supi, 1, security.AlgCiphering128NEA2, security.AlgIntegrity128NIA2)
+	ue := uee.NewRanUeContext(userEquipment.Supi, 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
-	ue.AuthenticationSubs = getAuthSubscription()
+	ue.AuthenticationSubs = uee.GetAuthSubscription(context.RAN_Self().Security.K, context.RAN_Self().Security.OPC, context.RAN_Self().Security.OP)
 
 	// send InitialUeMessage(Registration Request)(imsi-2089300007487)
 	mobileIdentity5GS := nasType.MobileIdentity5GS{
@@ -205,7 +165,7 @@ func PDUSessionEstablishment(userEquipment *context.UE) (pduSession *helper.PDUS
 		Buffer: []uint8{0x01, 0x02, 0xf8, 0x39, 0xf0, 0xff, 0x00, 0x00, 0x00, 0x00, 0x47, 0x78},
 	}
 
-	ueSecurityCapability := setUESecurityCapability(ue)
+	ueSecurityCapability := ue.GetUESecurityCapability()
 	registrationRequest := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, ueSecurityCapability, nil, nil, nil)
 	sendMsg, err = procedures.GetInitialUEMessage(ue.RanUeNgapId, registrationRequest, "")
 	if err != nil {
@@ -224,14 +184,14 @@ func PDUSessionEstablishment(userEquipment *context.UE) (pduSession *helper.PDUS
 		err = fmt.Errorf("Error Receiving Data")
 		return
 	}
-	ngapMsg, err := ngap.Decoder(recvMsg[:n])
+	ngapPdu, err := ngap.Decoder(recvMsg[:n])
 	if err != nil {
 		err = fmt.Errorf("Error Decoding NGAP")
 		return
 	}
 
 	// Calculate for RES*
-	nasPdu := procedures.GetNasPdu(ngapMsg.InitiatingMessage.Value.DownlinkNASTransport)
+	nasPdu := procedures.GetNasPdu(ue, ngapPdu.InitiatingMessage.Value.DownlinkNASTransport)
 	if err != nil {
 		err = fmt.Errorf("Error getting NasPDU")
 		return
@@ -265,7 +225,8 @@ func PDUSessionEstablishment(userEquipment *context.UE) (pduSession *helper.PDUS
 	}
 
 	// send NAS Security Mode Complete Msg
-	pdu = nasTestpacket.GetSecurityModeComplete(registrationRequest)
+	registrationRequestWith5GMM := nasTestpacket.GetRegistrationRequest(nasMessage.RegistrationType5GSInitialRegistration, mobileIdentity5GS, nil, ueSecurityCapability, ue.Get5GMMCapability(), nil, nil)
+	pdu = nasTestpacket.GetSecurityModeComplete(registrationRequestWith5GMM)
 	pdu, err = procedures.EncodeNasPduWithSecurity(ue, pdu, nas.SecurityHeaderTypeIntegrityProtectedAndCipheredWithNew5gNasSecurityContext, true, true)
 	if err != nil {
 		err = fmt.Errorf("Error Getting NAS Security Mode Complete")

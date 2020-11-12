@@ -48,6 +48,7 @@ func GetPDUSessionResourceSetupResponse(amfUeNgapID int64, ranUeNgapID int64, ip
 	message := ngapTestpacket.BuildPDUSessionResourceSetupResponseForRegistrationTest(amfUeNgapID, ranUeNgapID, ipv4)
 	return ngap.Encoder(message)
 }
+
 func EncodeNasPduWithSecurity(ue *uee.RanUeContext, pdu []byte, securityHeaderType uint8, securityContextAvailable, newSecurityContext bool) ([]byte, error) {
 	m := nas.NewMessage()
 	err := m.PlainNasDecode(&pdu)
