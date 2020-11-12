@@ -195,7 +195,7 @@ func PDUSessionEstablishment(userEquipment *context.UE) (pduSession *helper.PDUS
 
 	// New UE
 	// ue := test.NewRanUeContext("imsi-2089300007487", 1, security.AlgCiphering128NEA2, security.AlgIntegrity128NIA2)
-	ue := uee.NewRanUeContext(userEquipment.Supi, 1, security.AlgCiphering128NEA0, security.AlgIntegrity128NIA2)
+	ue := uee.NewRanUeContext(userEquipment.Supi, 1, security.AlgCiphering128NEA2, security.AlgIntegrity128NIA2)
 	ue.AmfUeNgapId = 1
 	ue.AuthenticationSubs = getAuthSubscription()
 

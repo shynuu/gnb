@@ -1,0 +1,3 @@
+package procedure
+
+func PDUSessionEstablishment() {}
