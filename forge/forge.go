@@ -22,37 +22,6 @@ import (
 	"golang.org/x/net/ipv4"
 )
 
-func setUESecurityCapability(ue *uee.RanUeContext) (UESecurityCapability *nasType.UESecurityCapability) {
-	UESecurityCapability = &nasType.UESecurityCapability{
-		Iei:    nasMessage.RegistrationRequestUESecurityCapabilityType,
-		Len:    8,
-		Buffer: []uint8{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-	}
-	switch ue.CipheringAlg {
-	case security.AlgCiphering128NEA0:
-		UESecurityCapability.SetEA0_5G(1)
-	case security.AlgCiphering128NEA1:
-		UESecurityCapability.SetEA1_128_5G(1)
-	case security.AlgCiphering128NEA2:
-		UESecurityCapability.SetEA2_128_5G(1)
-	case security.AlgCiphering128NEA3:
-		UESecurityCapability.SetEA3_128_5G(1)
-	}
-
-	switch ue.IntegrityAlg {
-	case security.AlgIntegrity128NIA0:
-		UESecurityCapability.SetIA0_5G(1)
-	case security.AlgIntegrity128NIA1:
-		UESecurityCapability.SetIA1_128_5G(1)
-	case security.AlgIntegrity128NIA2:
-		UESecurityCapability.SetIA2_128_5G(1)
-	case security.AlgIntegrity128NIA3:
-		UESecurityCapability.SetIA3_128_5G(1)
-	}
-
-	return
-}
-
 func ipv4HeaderChecksum(hdr *ipv4.Header) uint32 {
 	var Checksum uint32
 	Checksum += uint32((hdr.Version<<4|(20>>2&0x0f))<<8 | hdr.TOS)
