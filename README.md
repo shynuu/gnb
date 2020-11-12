@@ -1,5 +1,7 @@
 # A Software gNB for free5GC
 
+**/!\ The gNB is currently broken is not functionnal, major release to come in the coming days**
+
 ![5G gNB](https://img.shields.io/badge/Golang-5G%20gNB-blue?logo=go)
 
 - [Disclaimer](#disclaimer)
