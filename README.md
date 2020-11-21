@@ -1,6 +1,6 @@
 # A Software gNB for free5GC
 
-**/!\ The gNB is currently broken is not functionnal, major release to come in the coming days**
+**/!\ This project is deprecated and has been integrated into freecli https://github.com/srajdax/free5gc-cli**
 
 ![5G gNB](https://img.shields.io/badge/Golang-5G%20gNB-blue?logo=go)
 
